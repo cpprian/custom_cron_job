@@ -1,0 +1,3 @@
+/home/cyprian/Desktop/custom_cron_job/cmake-build-debug/CMakeFiles/custom_cron_job.dir
+/home/cyprian/Desktop/custom_cron_job/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/cyprian/Desktop/custom_cron_job/cmake-build-debug/CMakeFiles/rebuild_cache.dir

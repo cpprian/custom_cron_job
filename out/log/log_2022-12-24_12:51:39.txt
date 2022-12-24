@@ -1,3 +1,0 @@
-[2022-12-24 12:51:39] INFO: rtlsp_init() called
-[2022-12-24 12:51:39] INFO: Hello, World!
-[2022-12-24 12:51:39] WARNING: Dump created

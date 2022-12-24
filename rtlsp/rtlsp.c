@@ -11,7 +11,7 @@ char* generate_log_filename(char* log_path) {
 
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    sprintf(log_filename, "log_%d-%d-%d_%d:%d:%d.txt", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    sprintf(log_filename, "%s/log_%d-%d-%d_%d:%d:%d.txt", log_path, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
     return log_filename;
 }
 
@@ -198,7 +198,6 @@ void rtlsp_dump(int signo, siginfo_t* info, void* other) {
     }
     sem_wait(rtlsp.sem_dump);
 
-    printf("Signal %d caught\n", signo);
     char *dump_file_name = (char*)calloc(MAX_MESSAGE_SIZE, sizeof(char));
     if (dump_file_name == NULL) {
         rtlsp_logl(MESSAGE_ERROR, LOW, ERR_ALLOC);
@@ -208,7 +207,7 @@ void rtlsp_dump(int signo, siginfo_t* info, void* other) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
 
-    sprintf(dump_file_name, "dump_%d-%d-%d_%d:%d:%d.txt", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    sprintf(dump_file_name, "%s/dump_%d-%d-%d_%d:%d:%d.txt", rtlsp.dump_path, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 
     FILE *dump_file = fopen(dump_file_name, "a");
     if (dump_file == NULL) {
@@ -269,15 +268,12 @@ void rtlsp_log_config(int signo, siginfo_t* info, void* other) {
     switch (info->si_value.sival_int) {
         case 0:
             rtlsp.llevel = LOW;
-            printf("Log level set to LOW\n");
             break;
         case 1:
             rtlsp.llevel = MEDIUM;
-            printf("Log level set to MEDIUM\n");
             break;
         case 2:
             rtlsp.llevel = HIGH;
-            printf("Log level set to HIGH\n");
             break;
         case 3:
             if (rtlsp.is_on) {
@@ -285,7 +281,6 @@ void rtlsp_log_config(int signo, siginfo_t* info, void* other) {
             } else {
                 rtlsp.is_on = 1;
             }
-            printf("Log is %s\n", rtlsp.is_on ? "on" : "off");
             break;
         default:
             rtlsp_logl(MESSAGE_ERROR, LOW, ERR_SIG);
