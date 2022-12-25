@@ -21,9 +21,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bee11035-3d0b-483f-b4b6-b1adca34b649" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/bin/main" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/arg_handler.c" beforeDir="false" afterPath="$PROJECT_DIR$/util/arg_handler.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/arg_handler.h" beforeDir="false" afterPath="$PROJECT_DIR$/util/arg_handler.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +71,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Makefile Target.build">
+  <component name="RunManager" selected="Makefile Target.run_cancel">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -87,12 +88,20 @@
       </makefile>
       <method v="2" />
     </configuration>
+    <configuration name="run_cancel" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="run_cancel" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="CMake Application.custom_cron_job" />
+      <item itemvalue="Makefile Target.run_cancel" />
       <item itemvalue="Makefile Target.build" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.run_cancel" />
         <item itemvalue="Makefile Target.build" />
       </list>
     </recent_temporary>
@@ -105,7 +114,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1671873517427</updated>
-      <workItem from="1671873518827" duration="15804000" />
+      <workItem from="1671873518827" duration="17884000" />
     </task>
     <servers />
   </component>

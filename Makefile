@@ -8,6 +8,14 @@ run: build
 	@echo "Running..."
 	sudo ./bin/main $(MI) $(H) $(DM) $(MO) $(DW) $(CMD) $(OUT)
 
+run_list: build
+	@echo "Printing list..."
+	sudo ./bin/main -l
+
+run_cancel: build
+	@echo "Cancelling..."
+	sudo ./bin/main -c $(ID)
+
 clear_bin:
 	@echo "Clearing bin..."
 	rm -rf bin/*
@@ -22,4 +30,4 @@ clear_log:
 
 clear: clear_bin clear_dump clear_log
 
-.PHONY: build run clear_bin clear_dump clear_log clear
+.PHONY: build run run_list run_cancel clear_bin clear_dump clear_log clear
