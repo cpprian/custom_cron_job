@@ -126,10 +126,10 @@ void cron_run(struct ll_cron *cron) {
 
     // TODO: to set the timer to the time specified in the cron job
     struct itimerspec timer;
-    timer.it_value.tv_sec = 0;
-    timer.it_value.tv_nsec = 0;
-    timer.it_interval.tv_sec = 0;
-    timer.it_interval.tv_nsec = 0;
+    timer.it_value.tv_sec = return_tv_sec(cron->cron->arg);
+    timer.it_value.tv_nsec = return_tv_nsec(cron->cron->arg);
+    timer.it_interval.tv_sec = return_interval_sec(cron->cron->arg);
+    timer.it_interval.tv_nsec = return_interval_nsec(cron->cron->arg);
     timer_settime(timerid, 0, &timer, NULL);
 }
 

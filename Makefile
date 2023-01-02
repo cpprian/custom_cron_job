@@ -6,7 +6,7 @@ build:
 
 run: build
 	@echo "Running..."
-	sudo ./bin/main $(ABS) $(MI) $(H) $(DM) $(MO) $(DW) $(CMD) $(OUT)
+	sudo ./bin/main $(ABS) $(REP) $(MI) $(H) $(DM) $(MO) $(DW) $(CMD) $(OUT)
 
 run_list: build
 	@echo "Printing list..."

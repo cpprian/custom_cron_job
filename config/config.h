@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 
 #define DEFAULT_LOG_PATH "./out/log"
 #define DEFAULT_DUMP_PATH "./out/dump"

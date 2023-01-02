@@ -8,6 +8,7 @@ struct arg_struct* arg_struct_init(int argc, char* argv[]) {
             return NULL;
         }
         arg->request = REQUEST_LIST;
+        arg->ID = -1;
         return arg;
     } else if (argc == ARG_STRUCT_REMOVE_ARGS && strcmp(argv[1], "-c") == 0) {
         struct arg_struct* arg = (struct arg_struct*)calloc(1, sizeof(struct arg_struct));
@@ -51,6 +52,17 @@ struct arg_struct* arg_struct_init(int argc, char* argv[]) {
     } else if (arg_struct->abs < 0 || arg_struct->abs > 1) {
         arg_struct_destroy(arg_struct);
         rtlsp_loglf(MESSAGE_ERROR, HIGH, "Invalid argument ABS: %s", argv[1]);
+        return NULL;
+    }
+
+    arg_struct->repeat = strtol(argv[2], &err, 10);
+    if (err == argv[2]) {
+        arg_struct_destroy(arg_struct);
+        rtlsp_loglf(MESSAGE_ERROR, HIGH, "Invalid argument REPEAT: %s", argv[2]);
+        return NULL;
+    } else if (arg_struct->repeat < 0 || arg_struct->repeat > 1) {
+        arg_struct_destroy(arg_struct);
+        rtlsp_loglf(MESSAGE_ERROR, HIGH, "Invalid argument REPEAT: %s", argv[2]);
         return NULL;
     }
 
@@ -110,13 +122,13 @@ struct arg_struct* arg_struct_init(int argc, char* argv[]) {
         return NULL;
     }
 
-    strcpy(arg_struct->schedule->minute, argv[2]);
-    strcpy(arg_struct->schedule->hour, argv[3]);
-    strcpy(arg_struct->schedule->day, argv[4]);
-    strcpy(arg_struct->schedule->month, argv[5]);
-    strcpy(arg_struct->schedule->weekday, argv[6]);
-    strcpy(arg_struct->command, argv[7]);
-    strcpy(arg_struct->output, argv[8]);
+    strcpy(arg_struct->schedule->minute, argv[3]);
+    strcpy(arg_struct->schedule->hour, argv[4]);
+    strcpy(arg_struct->schedule->day, argv[5]);
+    strcpy(arg_struct->schedule->month, argv[6]);
+    strcpy(arg_struct->schedule->weekday, argv[7]);
+    strcpy(arg_struct->command, argv[8]);
+    strcpy(arg_struct->output, argv[9]);
 
     return arg_struct;
 }

@@ -7,7 +7,7 @@
 
 #define ARG_STRUCT_LIST_ARGS    2
 #define ARG_STRUCT_REMOVE_ARGS  3
-#define ARG_STRUCT_MAX_ARGS     9
+#define ARG_STRUCT_MAX_ARGS     10
 #define MAX_COMMAND_SIZE        20
 #define MAX_SCHEDULE_SIZE       20
 #define MAX_OUTPUT_SIZE         20
@@ -19,11 +19,11 @@ enum request_type {
 };
 
 struct schedule {
-    char* minute;
-    char* hour;
-    char* day;
-    char* month;
-    char* weekday;
+    char* minute;       // 0-59, 0 if not set
+    char* hour;         // 0-23, 0 if not set
+    char* day;          // 0-31, 0 if not set
+    char* month;        // 0-12, 0 if not set
+    char* weekday;      // 0-7,  0 if not set
 };
 
 struct arg_struct {

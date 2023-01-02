@@ -5,6 +5,7 @@
 #include "../rtlsp/rtlsp.h"
 #include "../rtlsp/message.h"
 #include "../util/arg_handler.h"
+#include "cron_timer/cron_timer.h"
 
 struct cron_struct {
     size_t ID;
