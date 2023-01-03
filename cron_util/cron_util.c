@@ -81,7 +81,10 @@ void cron_remove(size_t ID) {
 void cron_list_all() {
     struct ll_cron *current = cron_list;
     while (current != NULL) {
-        // todo: print list of all cron jobs
+        printf("ID: %zu\n", current->cron->ID);
+        printf("\tCommand: %s\n", current->cron->arg->command);
+        printf("\tOutput: %s\n", current->cron->arg->output);
+        printf("\tTime: hour: %s, minute: %s, day: %s, month: %s, weekday: %s\n", current->cron->arg->schedule->hour, current->cron->arg->schedule->minute, current->cron->arg->schedule->day, current->cron->arg->schedule->month, current->cron->arg->schedule->weekday);
         current = current->next;
     }
     rtlsp_loglf(MESSAGE_INFO, MEDIUM, "Listed all cron jobs");
@@ -89,6 +92,7 @@ void cron_list_all() {
 
 void cron_destroy_cron(struct ll_cron *cron) {
     arg_struct_destroy(cron->cron->arg);
+    timer_delete(&(cron->cron->timer));
     free(cron->cron);
     free(cron);
 }
@@ -106,59 +110,50 @@ void cron_destroy() {
 }
 
 void cron_run(struct ll_cron *cron) {
-    sigset_t mask;
-    sigfillset(&mask);
-
-    struct sigaction sa;
-    sa.sa_handler = cron_timeout;
-    sa.sa_mask = mask;
-    sa.sa_flags = (int)cron->cron->ID;
-
-    sigaction(CLOCK_REALTIME, &sa, NULL);
-
     timer_t timerid;
-
+    // fixme: check is still correct
     struct sigevent sev;
-    sev.sigev_notify = SIGEV_SIGNAL;
-    sev.sigev_signo = CLOCK_REALTIME;
-    sev.sigev_value.sival_ptr = &timerid;
+    sev.sigev_notify = SIGEV_THREAD;
+    sev.sigev_notify_function = cron_timeout;
+    sev.sigev_value.sival_ptr = (void*)cron;
+    sev.sigev_notify_attributes = NULL;
     timer_create(CLOCK_REALTIME, &sev, &timerid);
 
-    // TODO: to set the timer to the time specified in the cron job
     struct itimerspec timer;
     timer.it_value.tv_sec = return_tv_sec(cron->cron->arg);
     timer.it_value.tv_nsec = return_tv_nsec(cron->cron->arg);
     timer.it_interval.tv_sec = return_interval_sec(cron->cron->arg);
     timer.it_interval.tv_nsec = return_interval_nsec(cron->cron->arg);
-    timer_settime(timerid, 0, &timer, NULL);
-}
 
-void cron_timeout(int signum) {
-    struct ll_cron *current = cron_list;
-    while (current != NULL) {
-        if (current->cron->ID == (size_t)signum) {
-            return;
-        }
-        current = current->next;
+    if (cron->cron->arg->abs) {
+        timer_settime(timerid, TIMER_ABSTIME, &timer, NULL);
+    } else {
+        timer_settime(timerid, 0, &timer, NULL);
     }
 
-    if (current == NULL) {
-        rtlsp_loglf(MESSAGE_WARNING, MEDIUM, "Failed to find cron job with ID %d\n", signum);
-        return;
+    cron->cron->timer = timer;
+}
+
+void* cron_timeout(void* arg) {
+    struct ll_cron *cron = (struct ll_cron*)arg;
+    if (cron == NULL) {
+        rtlsp_loglf(MESSAGE_WARNING, HIGH, "cron_timeout: cron_struct is NULL");
+        return NULL;
     }
 
     pid_t child_pid;
-    char* argv[] = {current->cron->arg->command, current->cron->arg->output, NULL};
-    posix_spawn(&child_pid, current->cron->arg->command, NULL, NULL, argv, NULL);
+    char* argv[] = {cron->cron->arg->command, cron->cron->arg->output, NULL};
+    posix_spawn(&child_pid, cron->cron->arg->command, NULL, NULL, argv, NULL);
 
     int status;
     do {
         waitpid(child_pid, &status, 0);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
-    rtlsp_loglf(MESSAGE_INFO, LOW, "Cron job with ID %zu finished\n", current->cron->ID);
+    rtlsp_loglf(MESSAGE_INFO, LOW, "Cron job with ID %zu finished\n", cron->cron->ID);
 
-    if (!current->cron->arg->repeat) {
-        cron_remove(current->cron->ID);
+    if (!cron->cron->arg->repeat) {
+        cron_remove(cron->cron->ID);
     }
+    return NULL;
 }

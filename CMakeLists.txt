@@ -14,6 +14,9 @@ add_executable(custom_cron_job main.c
         cron_util/cron_util.h
         cron_util/cron_util.c
 
+        cron_util/cron_timer/cron_timer.c
+        cron_util/cron_timer/cron_timer.h
+
         network/client/client.c
         network/client/client.h
         network/server/server.h

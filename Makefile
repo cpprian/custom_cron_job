@@ -2,7 +2,7 @@
 
 build:
 	@echo "Building..."
-	gcc -o bin/main main.c cron_util/cron_util.c network/server/server.c network/client/client.c rtlsp/rtlsp.c util/arg_handler.c -lpthread
+	gcc -o bin/main main.c cron_util/cron_util.c cron_util/cron_timer/cron_timer.c network/server/server.c network/client/client.c rtlsp/rtlsp.c util/arg_handler.c -lpthread
 
 run: build
 	@echo "Running..."

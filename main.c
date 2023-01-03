@@ -3,10 +3,7 @@
 #include "./config/config.h"
 
 int main(int argc, char* argv[]) {
-    rtlsp_init(MIN, DEFAULT_LOG_PATH, DEFAULT_DUMP_PATH, SIGRTMIN, SIGRTMIN + 1);
-    rtlsp_loglf(MESSAGE_INFO, LOW, "Hello, %s!", "World");
-    rtlsp_sig(getpid(), SIGRTMIN + 1, 1);
-    rtlsp_destroy();
+    // TODO: Initialize the config
 
     // TODO: check is server running
     // TODO: server.run -> server_init -> server_destroy

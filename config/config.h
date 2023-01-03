@@ -6,7 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
-#include <dlfcn.h>
 #include <spawn.h>
 #include <pthread.h>
 #include <sys/types.h>
