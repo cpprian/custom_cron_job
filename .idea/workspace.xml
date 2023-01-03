@@ -21,9 +21,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bee11035-3d0b-483f-b4b6-b1adca34b649" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/bin/main" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/arg_handler.c" beforeDir="false" afterPath="$PROJECT_DIR$/util/arg_handler.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/arg_handler.h" beforeDir="false" afterPath="$PROJECT_DIR$/util/arg_handler.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-f5bfa3fdb9bc821f1cf7.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2022-12-26T13-54-20-0607.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/target-custom_cron_job-Debug-cfcd5c39a09752ad225f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.h" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cron_util/cron_timer/cron_timer.c" beforeDir="false" afterPath="$PROJECT_DIR$/cron_util/cron_timer/cron_timer.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cron_util/cron_timer/cron_timer.h" beforeDir="false" afterPath="$PROJECT_DIR$/cron_util/cron_timer/cron_timer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cron_util/cron_util.c" beforeDir="false" afterPath="$PROJECT_DIR$/cron_util/cron_util.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cron_util/cron_util.h" beforeDir="false" afterPath="$PROJECT_DIR$/cron_util/cron_util.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,19 +72,20 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/cyprian/Desktop/real_time_log_system_package&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/cyprian/Desktop/scr&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Makefile Target.build">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+  <component name="RunManager" selected="Makefile Target.run_cancel">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="custom_cron_job" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="custom_cron_job" TARGET_NAME="custom_cron_job" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="custom_cron_job" RUN_TARGET_NAME="custom_cron_job">
@@ -87,12 +99,20 @@
       </makefile>
       <method v="2" />
     </configuration>
+    <configuration name="run_cancel" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="run_cancel" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="CMake Application.custom_cron_job" />
+      <item itemvalue="Makefile Target.run_cancel" />
       <item itemvalue="Makefile Target.build" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.run_cancel" />
         <item itemvalue="Makefile Target.build" />
       </list>
     </recent_temporary>
@@ -105,12 +125,27 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1671873517427</updated>
-      <workItem from="1671873518827" duration="15804000" />
+      <workItem from="1671873518827" duration="37909000" />
+      <workItem from="1672675425226" duration="3000" />
+      <workItem from="1672679017507" duration="9752000" />
+      <workItem from="1672737437456" duration="5071000" />
+      <workItem from="1672769359798" duration="3000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
