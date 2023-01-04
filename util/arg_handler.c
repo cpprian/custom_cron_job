@@ -133,6 +133,51 @@ struct arg_struct* arg_struct_init(int argc, char* argv[]) {
     return arg_struct;
 }
 
+void save_arg_struct(struct arg_struct* arg_struct, int shm_fd) {
+    if (ftruncate(shm_fd, sizeof(struct arg_struct)) == -1) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, "Failed to truncate shared memory");
+        return;
+    }
+
+    void* shm_ptr = mmap(NULL, sizeof(struct arg_struct), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    if (shm_ptr == MAP_FAILED) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, "Failed to map shared memory");
+        return;
+    }
+
+    memcpy(shm_ptr, arg_struct, sizeof(struct arg_struct));
+
+    if (munmap(shm_ptr, sizeof(struct arg_struct)) == -1) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, "Failed to unmap shared memory");
+        return;
+    }
+    shm_unlink(SHM_NAME);
+}
+
+struct arg_struct* load_arg_struct(int shm_fd) {
+    struct arg_struct* arg_struct = (struct arg_struct*)calloc(1, sizeof(struct arg_struct));
+    if (arg_struct == NULL) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, ERR_ALLOC);
+        return NULL;
+    }
+
+    void* shm_ptr = mmap(NULL, sizeof(struct arg_struct), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    if (shm_ptr == MAP_FAILED) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, "Failed to map shared memory");
+        return NULL;
+    }
+
+    memcpy(arg_struct, shm_ptr, sizeof(struct arg_struct));
+
+    if (munmap(shm_ptr, sizeof(struct arg_struct)) == -1) {
+        rtlsp_logl(MESSAGE_ERROR, HIGH, "Failed to unmap shared memory");
+        return NULL;
+    }
+    shm_unlink(SHM_NAME);
+
+    return arg_struct;
+}
+
 void arg_struct_destroy(struct arg_struct* arg_struct) {
     free(arg_struct->schedule->minute);
     free(arg_struct->schedule->hour);

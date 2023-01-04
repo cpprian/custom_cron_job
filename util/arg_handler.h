@@ -39,6 +39,8 @@ struct arg_struct {
 };
 
 struct arg_struct* arg_struct_init(int argc, char* argv[]);
+void save_arg_struct(struct arg_struct* arg_struct, int shm_fd);
+struct arg_struct* load_arg_struct(int shm_fd);
 void arg_struct_destroy(struct arg_struct* arg_struct);
 
 #endif // ARG_HANDLER_H

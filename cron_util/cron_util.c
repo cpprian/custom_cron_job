@@ -16,6 +16,7 @@ void cron_init() {
 }
 
 void cron_add(struct arg_struct* arg) {
+    sem_wait(&sem_cron);
     if (arg->request == REQUEST_LIST) {
         cron_list_all();
         arg_struct_destroy(arg);
@@ -54,6 +55,7 @@ void cron_add(struct arg_struct* arg) {
     }
 
     cron_run(new_cron);
+    sem_wait(&sem_cron);
 }
 
 void cron_remove(size_t ID) {
@@ -135,6 +137,7 @@ void cron_run(struct ll_cron *cron) {
 }
 
 void* cron_timeout(void* arg) {
+    sem_wait(&sem_cron);
     struct ll_cron *cron = (struct ll_cron*)arg;
     if (cron == NULL) {
         rtlsp_loglf(MESSAGE_WARNING, HIGH, "cron_timeout: cron_struct is NULL");
@@ -155,5 +158,6 @@ void* cron_timeout(void* arg) {
     if (!cron->cron->arg->repeat) {
         cron_remove(cron->cron->ID);
     }
+    sem_wait(&sem_cron);
     return NULL;
 }

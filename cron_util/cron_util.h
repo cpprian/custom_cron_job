@@ -18,6 +18,7 @@ struct ll_cron {
     struct ll_cron *next;
 };
 
+sem_t sem_cron;
 struct ll_cron *cron_list;
 
 void cron_init();

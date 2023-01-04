@@ -77,20 +77,6 @@ build CMakeFiles/custom_cron_job.dir/cron_util/cron_timer/cron_timer.c.o: C_COMP
   OBJECT_DIR = CMakeFiles/custom_cron_job.dir
   OBJECT_FILE_DIR = CMakeFiles/custom_cron_job.dir/cron_util/cron_timer
 
-build CMakeFiles/custom_cron_job.dir/network/client/client.c.o: C_COMPILER__custom_cron_job_Debug /home/cyprian/Desktop/custom_cron_job/network/client/client.c || cmake_object_order_depends_target_custom_cron_job
-  DEP_FILE = CMakeFiles/custom_cron_job.dir/network/client/client.c.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu11
-  INCLUDES = -I/home/cyprian/Desktop/custom_cron_job/rtlsp -I/home/cyprian/Desktop/custom_cron_job/config
-  OBJECT_DIR = CMakeFiles/custom_cron_job.dir
-  OBJECT_FILE_DIR = CMakeFiles/custom_cron_job.dir/network/client
-
-build CMakeFiles/custom_cron_job.dir/network/server/server.c.o: C_COMPILER__custom_cron_job_Debug /home/cyprian/Desktop/custom_cron_job/network/server/server.c || cmake_object_order_depends_target_custom_cron_job
-  DEP_FILE = CMakeFiles/custom_cron_job.dir/network/server/server.c.o.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu11
-  INCLUDES = -I/home/cyprian/Desktop/custom_cron_job/rtlsp -I/home/cyprian/Desktop/custom_cron_job/config
-  OBJECT_DIR = CMakeFiles/custom_cron_job.dir
-  OBJECT_FILE_DIR = CMakeFiles/custom_cron_job.dir/network/server
-
 build CMakeFiles/custom_cron_job.dir/util/arg_handler.c.o: C_COMPILER__custom_cron_job_Debug /home/cyprian/Desktop/custom_cron_job/util/arg_handler.c || cmake_object_order_depends_target_custom_cron_job
   DEP_FILE = CMakeFiles/custom_cron_job.dir/util/arg_handler.c.o.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu11
@@ -106,7 +92,7 @@ build CMakeFiles/custom_cron_job.dir/util/arg_handler.c.o: C_COMPILER__custom_cr
 #############################################
 # Link the executable custom_cron_job
 
-build custom_cron_job: C_EXECUTABLE_LINKER__custom_cron_job_Debug CMakeFiles/custom_cron_job.dir/main.c.o CMakeFiles/custom_cron_job.dir/rtlsp/rtlsp.c.o CMakeFiles/custom_cron_job.dir/cron_util/cron_util.c.o CMakeFiles/custom_cron_job.dir/cron_util/cron_timer/cron_timer.c.o CMakeFiles/custom_cron_job.dir/network/client/client.c.o CMakeFiles/custom_cron_job.dir/network/server/server.c.o CMakeFiles/custom_cron_job.dir/util/arg_handler.c.o
+build custom_cron_job: C_EXECUTABLE_LINKER__custom_cron_job_Debug CMakeFiles/custom_cron_job.dir/main.c.o CMakeFiles/custom_cron_job.dir/rtlsp/rtlsp.c.o CMakeFiles/custom_cron_job.dir/cron_util/cron_util.c.o CMakeFiles/custom_cron_job.dir/cron_util/cron_timer/cron_timer.c.o CMakeFiles/custom_cron_job.dir/util/arg_handler.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/custom_cron_job.dir
   POST_BUILD = :
