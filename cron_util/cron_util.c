@@ -1,5 +1,20 @@
 #include "cron_util.h"
 
+sem_t sem_cron;
+struct ll_cron *cron_list;
+
+void init_cron_sem() {
+    sem_cron = *sem_open("sem_cron", O_CREAT | O_RDWR, 0644, 1);
+}
+
+void close_cron_sem() {
+    sem_close(&sem_cron);
+}
+
+void unlink_cron_sem() {
+    sem_unlink("sem_cron");
+}
+
 struct ll_cron* return_last_cron() {
     struct ll_cron *current = cron_list;
     while (current->next != NULL) {
@@ -113,7 +128,7 @@ void cron_destroy() {
 
 void cron_run(struct ll_cron *cron) {
     timer_t timerid;
-    // fixme: check is still correct
+
     struct sigevent sev;
     sev.sigev_notify = SIGEV_THREAD;
     sev.sigev_notify_function = cron_timeout;

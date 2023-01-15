@@ -5,7 +5,7 @@
 #include "./cron_util/cron_util.h"
 
 int main(int argc, char* argv[]) {
-    sem_cron = *sem_open("sem_cron", O_CREAT | O_RDWR, 0644, 1);
+    init_cron_sem();
     rtlsp_init(STANDARD, DEFAULT_LOG_PATH, DEFAULT_DUMP_PATH, SIGRTMIN, SIGRTMIN+1);
 
     int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
@@ -19,47 +19,47 @@ int main(int argc, char* argv[]) {
     if (rc) {
         // client
         if (EWOULDBLOCK == errno) {
-            rtlsp_logl(MESSAGE_INFO, LOW, "New client has been started");
+            rtlsp_logl(MESSAGE_INFO, LOW, "Client: New client has been started");
             struct arg_struct* arg = arg_struct_init(argc, argv);
             if (arg == NULL) {
-                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to initialize arg_struct");
-                sem_close(&sem_cron);
+                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Client: Failed to initialize arg_struct");
+                close_cron_sem();
                 rtlsp_destroy();
                 return 1;
             }
 
             if (arg->request == REQUEST_LIST) {
-                rtlsp_logl(MESSAGE_INFO, LOW, "Requesting list of cron jobs");
+                rtlsp_logl(MESSAGE_INFO, LOW, "Client: Requesting list of cron jobs");
             } else if (arg->request == REQUEST_REMOVE) {
-                rtlsp_loglf(MESSAGE_INFO, LOW, "Requesting removal of cron job with ID %zu", arg->ID);
+                rtlsp_loglf(MESSAGE_INFO, LOW, "Client: Requesting removal of cron job with ID %zu", arg->ID);
             } else if (arg->request == REQUEST_ADD) {
-                rtlsp_loglf(MESSAGE_INFO, LOW, "Requesting addition of cron job with command %s", arg->command);
+                rtlsp_loglf(MESSAGE_INFO, LOW, "Client: Requesting addition of cron job with command %s", arg->command);
             } else {
-                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Invalid request type");
-                sem_close(&sem_cron);
+                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Client: Invalid request type");
+                close_cron_sem();
                 rtlsp_destroy();
                 return 1;
             }
 
             save_arg_struct(arg, shm_fd);
-
             union sigval value;
             value.sival_int = shm_fd;
-            if (sigqueue(getppid(), SIGRTMIN+2, value) == -1) {
-                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to send signal to parent");
-                sem_close(&sem_cron);
+            if (sigqueue(getppid(), SIGRTMIN+2, value) != 0) {
+                printf("Failed to send signal to parent\n");
+                rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Client: Failed to send signal to parent");
+                close_cron_sem();
                 rtlsp_destroy();
                 return 1;
             }
-            rtlsp_logl(MESSAGE_INFO, LOW, "Signal sent to parent");
+            rtlsp_logl(MESSAGE_INFO, LOW, "Client: Signal sent to parent");
         } else {
-            rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to lock PID file. Cannot start client...");
-            sem_close(&sem_cron);
+            rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Client: Failed to lock PID file. Cannot start client...");
+            close_cron_sem();
             return 1;
         }
     } else {
         // server
-        rtlsp_logl(MESSAGE_INFO, LOW, "New server has been started");
+        rtlsp_logl(MESSAGE_INFO, LOW, "Server: New server has been started");
         cron_init();
 
         while(1) {
@@ -73,32 +73,32 @@ int main(int argc, char* argv[]) {
             sigwaitinfo(&mask, &info);
 
             if (info.si_signo == SIGINT) {
-                rtlsp_logl(MESSAGE_INFO, LOW, "SIGINT received. Exiting...");
+                rtlsp_logl(MESSAGE_INFO, LOW, "Server: SIGINT received. Exiting...");
                 break;
             }
 
             if (info.si_signo == SIGRTMIN+2) {
-                rtlsp_logl(MESSAGE_INFO, LOW, "Signal received");
+                rtlsp_logl(MESSAGE_INFO, LOW, "Server: Signal received");
                 struct arg_struct* arg = load_arg_struct(shm_fd);
                 if (arg == NULL) {
-                    rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to load arg_struct");
-                    sem_close(&sem_cron);
+                    rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Server: Failed to load arg_struct");
+                    unlink_cron_sem();
                     rtlsp_destroy();
                     return 1;
                 }
 
                 if (arg->request == REQUEST_LIST) {
-                    rtlsp_logl(MESSAGE_INFO, LOW, "Requesting list of cron jobs");
+                    rtlsp_logl(MESSAGE_INFO, LOW, "Server: Requesting list of cron jobs");
                     cron_list_all();
                 } else if (arg->request == REQUEST_REMOVE) {
-                    rtlsp_loglf(MESSAGE_INFO, LOW, "Requesting removal of cron job with ID %zu", arg->ID);
+                    rtlsp_loglf(MESSAGE_INFO, LOW, "Server: Requesting removal of cron job with ID %zu", arg->ID);
                     cron_remove(arg->ID);
                 } else if (arg->request == REQUEST_ADD) {
-                    rtlsp_loglf(MESSAGE_INFO, LOW, "Requesting addition of cron job with command %s", arg->command);
+                    rtlsp_loglf(MESSAGE_INFO, LOW, "Server: Requesting addition of cron job with command %s", arg->command);
                     cron_add(arg);
                 } else {
-                    rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Invalid request type");
-                    sem_close(&sem_cron);
+                    rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Server: Invalid request type");
+                    unlink_cron_sem();
                     rtlsp_destroy();
                     return 1;
                 }
@@ -106,8 +106,9 @@ int main(int argc, char* argv[]) {
         }
 
         cron_destroy();
-        sem_unlink("sem_cron");
+        unlink_cron_sem();
     }
+
 
     rtlsp_destroy();
     return 0;

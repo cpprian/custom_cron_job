@@ -18,8 +18,6 @@ struct ll_cron {
     struct ll_cron *next;
 };
 
-sem_t sem_cron;
-struct ll_cron *cron_list;
 
 void cron_init();
 void cron_add(struct arg_struct* arg);
@@ -29,5 +27,9 @@ void cron_run(struct ll_cron *cron);
 void cron_destroy();
 void cron_destroy_cron(struct ll_cron *cron);
 void* cron_timeout(void* arg);
+
+void init_cron_sem();
+void close_cron_sem();
+void unlink_cron_sem();
 
 #endif // CRON_UTIL_H

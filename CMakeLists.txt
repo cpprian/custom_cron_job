@@ -19,4 +19,4 @@ add_executable(custom_cron_job main.c
 
         config/config.h
         util/arg_handler.c
-        util/arg_handler.h)
+        util/arg_handler.h example_app/app.c)

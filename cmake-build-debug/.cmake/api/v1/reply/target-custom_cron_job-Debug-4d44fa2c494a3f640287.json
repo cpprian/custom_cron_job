@@ -80,7 +80,8 @@
 				2,
 				5,
 				6,
-				9
+				9,
+				11
 			]
 		}
 	],
@@ -117,7 +118,8 @@
 				2,
 				5,
 				6,
-				9
+				9,
+				11
 			]
 		},
 		{
@@ -194,6 +196,12 @@
 			"backtrace" : 1,
 			"path" : "util/arg_handler.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "example_app/app.c",
+			"sourceGroupIndex" : 0
 		}
 	],
 	"type" : "EXECUTABLE"
