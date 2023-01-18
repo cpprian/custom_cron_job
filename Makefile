@@ -1,20 +1,6 @@
-
-
 build:
 	@echo "Building..."
-	gcc -o bin/main main.c cron_util/cron_util.c cron_util/cron_timer/cron_timer.c rtlsp/rtlsp.c util/arg_handler.c -lpthread
-
-run: build
-	@echo "Running..."
-	sudo ./bin/main $(ABS) $(REP) $(MI) $(H) $(DM) $(MO) $(DW) $(CMD) $(OUT)
-
-run_list: build
-	@echo "Printing list..."
-	sudo ./bin/main -l
-
-run_cancel: build
-	@echo "Cancelling..."
-	sudo ./bin/main -c $(ID)
+	gcc -o bin/main main.c cron_util/cron_util.c cron_util/cron_timer/cron_timer.c rtlsp/rtlsp.c util/arg_handler.c util/client_task.c util/server_task.c -lpthread
 
 clear_bin:
 	@echo "Clearing bin..."

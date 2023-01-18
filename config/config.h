@@ -17,10 +17,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <semaphore.h>
+#include <mqueue.h>
 
 #define DEFAULT_LOG_PATH "./out/log"
 #define DEFAULT_DUMP_PATH "./out/dump"
-#define PID_FILE "./out/custom_cron_job.pid"
-#define SHM_NAME "/custom_cron_job_shm"
+#define QUEUE_NAME "/server_queue"
 
 #endif // CONFIG_H

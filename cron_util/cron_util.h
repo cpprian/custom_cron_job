@@ -22,7 +22,7 @@ struct ll_cron {
 void cron_init();
 void cron_add(struct arg_struct* arg);
 void cron_remove(size_t ID);
-void cron_list_all();
+void cron_list_all(char* userid);
 void cron_run(struct ll_cron *cron);
 void cron_destroy();
 void cron_destroy_cron(struct ll_cron *cron);

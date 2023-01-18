@@ -1,13 +1,7 @@
 #include "cron_timer.h"
 
 time_t return_tv_sec(struct arg_struct* arg) {
-    time_t tv_sec = 0;
-
-    tv_sec += atoi(arg->schedule->minute) * 60;
-    tv_sec += atoi(arg->schedule->hour) * 60 * 60;
-    tv_sec += atoi(arg->schedule->day) * 60 * 60 * 24;
-    tv_sec += atoi(arg->schedule->month) * 60 * 60 * 24 * 30;
-    tv_sec += atoi(arg->schedule->weekday) * 60 * 60 * 24 * 7;
+    time_t tv_sec = arg->start_sec;
 
     if (arg->abs == 1) {
         struct timespec current_time;
@@ -15,11 +9,12 @@ time_t return_tv_sec(struct arg_struct* arg) {
         tv_sec += current_time.tv_sec;
     }
 
+    printf("tv_sec: %zu\n", tv_sec);
     return tv_sec;
 }
 
 long return_tv_nsec(struct arg_struct* arg) {
-    long tv_nsec = 0;
+    long tv_nsec = arg->start_msec;
 
     if (arg->abs) {
         struct timespec current_time;
@@ -31,15 +26,10 @@ long return_tv_nsec(struct arg_struct* arg) {
 }
 
 time_t return_interval_sec(struct arg_struct* arg) {
-    time_t interval_sec = 0;
-
-    if (arg->repeat && !arg->abs) {
-        interval_sec += atoi(arg->schedule->minute) * 60;
-    }
-
+    time_t interval_sec = arg->repeat_sec;
     return interval_sec;
 }
 
 long return_interval_nsec(struct arg_struct* arg) {
-    return 0 ;
+    return arg->repeat_msec;
 }

@@ -1,22 +1,12 @@
 #include "cron_util.h"
 
-sem_t sem_cron;
 struct ll_cron *cron_list;
-
-void init_cron_sem() {
-    sem_cron = *sem_open("sem_cron", O_CREAT | O_RDWR, 0644, 1);
-}
-
-void close_cron_sem() {
-    sem_close(&sem_cron);
-}
-
-void unlink_cron_sem() {
-    sem_unlink("sem_cron");
-}
 
 struct ll_cron* return_last_cron() {
     struct ll_cron *current = cron_list;
+    if (current == NULL) {
+        return NULL;
+    }
     while (current->next != NULL) {
         current = current->next;
     }
@@ -31,20 +21,6 @@ void cron_init() {
 }
 
 void cron_add(struct arg_struct* arg) {
-    sem_wait(&sem_cron);
-    if (arg->request == REQUEST_LIST) {
-        cron_list_all();
-        arg_struct_destroy(arg);
-        return;
-    } else if (arg->request == REQUEST_REMOVE) {
-        cron_remove(arg->ID);
-        arg_struct_destroy(arg);
-        return;
-    } else if (arg->request != REQUEST_ADD) {
-        rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Invalid request type");
-        return;
-    }
-
     struct ll_cron *new_cron = (struct ll_cron*)calloc(1, sizeof(struct ll_cron));
     if (new_cron == NULL) {
         rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to allocate memory for new_cron");
@@ -59,7 +35,7 @@ void cron_add(struct arg_struct* arg) {
     }
 
     struct ll_cron* last_cron = return_last_cron();
-    new_cron->cron->ID = 1 + last_cron != NULL ? last_cron->cron->ID : 0;
+    new_cron->cron->ID = 1 + (last_cron != NULL ? last_cron->cron->ID : 0);
 
     new_cron->cron->arg = arg;
 
@@ -70,7 +46,6 @@ void cron_add(struct arg_struct* arg) {
     }
 
     cron_run(new_cron);
-    sem_wait(&sem_cron);
 }
 
 void cron_remove(size_t ID) {
@@ -95,15 +70,33 @@ void cron_remove(size_t ID) {
     }
 }
 
-void cron_list_all() {
+void cron_list_all(char* user_id) {
     struct ll_cron *current = cron_list;
+    mqd_t client_queue = mq_open(user_id, O_WRONLY);
+    if (client_queue == -1) {
+        rtlsp_loglf(MESSAGE_WARNING, MEDIUM, "Failed to open client queue %s\n", client_queue);
+        return;
+    }
+
     while (current != NULL) {
-        printf("ID: %zu\n", current->cron->ID);
-        printf("\tCommand: %s\n", current->cron->arg->command);
-        printf("\tOutput: %s\n", current->cron->arg->output);
-        printf("\tTime: hour: %s, minute: %s, day: %s, month: %s, weekday: %s\n", current->cron->arg->schedule->hour, current->cron->arg->schedule->minute, current->cron->arg->schedule->day, current->cron->arg->schedule->month, current->cron->arg->schedule->weekday);
+        char* message = (char*)calloc(1, 100);
+        if (message == NULL) {
+            rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to allocate memory for message");
+            return;
+        }
+        sprintf(message, "%zu:%s", current->cron->ID, current->cron->arg->command);
+        if (mq_send(client_queue, message, strlen(current->cron->arg->command), current->cron->ID) == -1) {
+            rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to send message to client");
+            free(message);
+            return;
+        }
+        free(message);
         current = current->next;
     }
+    if (mq_send(client_queue, "END", 3, 0) == -1) {
+        rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to send message to client");
+    }
+    mq_close(client_queue);
     rtlsp_loglf(MESSAGE_INFO, MEDIUM, "Listed all cron jobs");
 }
 
@@ -124,6 +117,31 @@ void cron_destroy() {
     }
 
     free(cron_list);
+}
+
+void* cron_timeout(void* arg) {
+    struct ll_cron *cron = (struct ll_cron*)arg;
+    if (cron == NULL) {
+        rtlsp_logl(MESSAGE_CRITICAL, HIGH, "Failed to get cron from sigval");
+        return NULL;
+    }
+
+    pid_t child_pid;
+    char* argv[] = {cron->cron->arg->command, NULL};
+    posix_spawn(&child_pid, cron->cron->arg->command, NULL, NULL, argv, NULL);
+
+    int status;
+    do {
+        waitpid(child_pid, &status, 0);
+    } while (!WIFEXITED(status));
+
+    if (cron->cron->arg->repeat_msec == 0 && cron->cron->arg->repeat_sec == 0) {
+        cron_remove(cron->cron->ID);
+        rtlsp_loglf(MESSAGE_INFO, MEDIUM, "Cron job with ID %zu timed out", cron->cron->ID);
+    } else {
+        rtlsp_loglf(MESSAGE_INFO, MEDIUM, "Cron job with ID %zu will be repeated", cron->cron->ID);
+    }
+    return NULL;
 }
 
 void cron_run(struct ll_cron *cron) {
@@ -149,30 +167,5 @@ void cron_run(struct ll_cron *cron) {
     }
 
     cron->cron->timer = timer;
-}
-
-void* cron_timeout(void* arg) {
-    sem_wait(&sem_cron);
-    struct ll_cron *cron = (struct ll_cron*)arg;
-    if (cron == NULL) {
-        rtlsp_loglf(MESSAGE_WARNING, HIGH, "cron_timeout: cron_struct is NULL");
-        return NULL;
-    }
-
-    pid_t child_pid;
-    char* argv[] = {cron->cron->arg->command, cron->cron->arg->output, NULL};
-    posix_spawn(&child_pid, cron->cron->arg->command, NULL, NULL, argv, NULL);
-
-    int status;
-    do {
-        waitpid(child_pid, &status, 0);
-    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-
-    rtlsp_loglf(MESSAGE_INFO, LOW, "Cron job with ID %zu finished\n", cron->cron->ID);
-
-    if (!cron->cron->arg->repeat) {
-        cron_remove(cron->cron->ID);
-    }
-    sem_wait(&sem_cron);
-    return NULL;
+    rtlsp_logl(MESSAGE_INFO, MEDIUM, "Started cron job");
 }
